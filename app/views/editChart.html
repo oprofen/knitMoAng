@@ -1,0 +1,65 @@
+<div class="modal-header">
+            <h3 class="modal-title">Edit</h3>
+        </div>
+        <div class="modal-body">
+            <form class="form-horizontal">
+                <div class="form-group">
+                    <div class="col-xs-12"><p>Total</p></div>
+                </div>   
+                <div class="form-group">
+                  <div class="col-xs-9"><p>Horizontal</p></div>
+                  <div class="col-xs-3"><p ng-bind="::$parent.limit.x"></p></div>
+                </div>
+                <div class="form-group">
+                  <div class="col-xs-9"><p>Vertical</p></div>
+                  <div class="col-xs-3"><p ng-bind="::$parent.limit.y"></p></div>
+                </div>
+                <div class="form-group">
+                  <div class="col-xs-12">
+                       <div class="checkbox">
+                            <label>
+                                <input type="checkbox" id="deleteCurrentRow">
+                                <span ng-bind="::'Delete current row ' +  (+limit.x - currentX)"></span>
+                            </label>
+                          </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="col-xs-12">
+                       <div class="checkbox">
+                            <label>
+                              <input type="checkbox" id="deleteCurrentColumn">
+                              <span ng-bind="::'Delete current column ' + (+limit.y - currentY)"></span>
+                            </label>
+                          </div>
+                  </div>
+                </div>
+                <actionbox class="form-group" data-position="left" data-subject="column" style="display:block">   
+                </actionbox>
+                <actionbox class="form-group" data-position="right" data-subject="column" style="display:block">   
+                </actionbox>
+                <actionbox class="form-group" data-position="bottom" data-subject="row" style="display:block">   
+                </actionbox>
+                <actionbox class="form-group" data-position="top" data-subject="row" style="display:block">   
+                </actionbox>
+                <div class="form-group">
+                  <div class="col-xs-9">Default color</div>
+                  <div class="col-xs-3">
+                    <button class="btn btn-default" id="defaultColorEdit" ng-click="chooseColor()">Color</button>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="col-xs-6">
+                    <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
+                  </div>
+                  <div class="col-xs-6">
+                    <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+                  </div>
+                </div>
+              </form>
+            
+        </div>
+       
+            
+            
+        

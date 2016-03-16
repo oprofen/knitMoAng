@@ -1,0 +1,56 @@
+
+table.chart td, table.chart th{
+    border: 1px solid #EEE;
+    vertical-align: middle;
+    text-align: center;
+    cursor: pointer;
+    empty-cells: show;
+    line-height:0;
+}
+table.chart {
+    table-layout: fixed;
+    border-spacing:0 0px;
+    border-collapse:collapse;
+    
+}
+#header-horizontal { 
+    position:relative;
+    left:0px;
+    z-index: 1000;
+    background-color:white;
+    opacity:0.5;
+    
+}
+
+#header-vertical {
+    position:absolute;
+    left:0px;
+    z-index: 1000;
+    background-color:white;
+    opacity:0.5;
+}
+
+
+#chart {
+    position: relative;
+    
+}
+#tool-box {
+    
+    height: 20px;
+    position:absolute;
+    right: 25px;
+    bottom:50px;
+    z-index: 1000;
+    display:inline-block;
+    opacity: 0.5;
+}
+.tool {
+    padding-left: 2.5px;
+    padding-right: 2.5px;
+    height: 40px;
+}
+
+
+
+
