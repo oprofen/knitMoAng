@@ -14,9 +14,9 @@ angular.module('knitMoAngularjsApp')
             //Вспомогательные функции
               
             // Начальные параметры
+           
             
-            
-            var chart = eService.createNew(5, 5, '#FFFFFF');
+            var chart = eService.createNew(25, 25, '#FFFFFF');
             
             
             $scope.content = chart.content;
@@ -26,8 +26,8 @@ angular.module('knitMoAngularjsApp')
             
             
             $scope.colorBox = '#000000';
-            $scope.tableSize = 25;
-
+            $scope.tableSize = 75;
+            $scope.choosenColor = "";
             
             
             $scope.chooseDefaultColor = function(){

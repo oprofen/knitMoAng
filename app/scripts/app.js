@@ -12,7 +12,6 @@ angular
   .module('knitMoAngularjsApp', [
     'ngAnimate',
     'ui.router',
-    'ngTouch',
     'ngSanitize',
     'ui.bootstrap'
     

@@ -16,17 +16,13 @@ angular.module('knitMoAngularjsApp')
   return {
     
     priority: 1,
-    template: "<table ng-style=\"chartHorz\" class=\"chart\" id=\"header-horizontal\"><tbody  ng-bind-html=\"horz;\"></tbody></table>\n\
-    <table ng-style=\"chartSize\" id=\"chart\" class=\"chart\"><tbody ng-bind-html=\"net\"></tbody></table>\n\
-    <table ng-style=\"chartVert\" class=\"chart\" id=\"header-vertical\"><tbody  ng-bind-html=\"vert;\"></tbody></table>"
+    template: "<div id=\"header-vertical\"><table class=\"chart\" ng-style=\"chartVert\"><tbody ng-bind-html=\"vert\"></tbody></table></div>\n\
+    <div id=\"mainBody\"><table id=\"header-horizontal\" ng-style=\"chartHorz\" class=\"chart\"><tbody  ng-bind-html=\"horz;\"></tbody></table>\n\
+    <table id=\"chart\" ng-style=\"chartSize\" class=\"chart\"><tbody ng-bind-html=\"net\"></tbody></table></div>"
     ,
     controller: function($scope, $element, $attrs, $transclude) {
         // Вспомогательные функции DeleteColumnsAfter
-        function _createFunctionName(action, subject, position) {
-            
-            var first = subject.substring(0, 1).toUpperCase() + subject.substring(1, subject.length) + "s";
-            return action + first;
-        } 
+        
         function _createNet() {
             var row, result = "";
             
@@ -83,29 +79,28 @@ angular.module('knitMoAngularjsApp')
             return a;
         }, function(newValue){
 
-         var width = newValue.width / (newValue.x + 1) * newValue.x * newValue.coeff / 100;
-         var height = newValue.width / (newValue.x + 1) * newValue.y * newValue.coeff / 100;
-         var cellSize = newValue.width / (newValue.x + 1) * newValue.coeff / 100;
+         var width = newValue.width  * newValue.coeff * 0.95 / 100 - 45;
+         var height = newValue.width / newValue.x  * newValue.y * newValue.coeff * 0.95 / 100 * 1.5 - 45;
+         
          
          
 
          $scope.chartSize.width =  width + 'px';
          $scope.chartSize.height =  height + 'px';
-         $scope.chartSize.left =  cellSize + 'px';
          $scope.chartSize.background = newValue.defaultColor;
          
          
          $scope.chartHorz.width =  width + 'px';
-         $scope.chartHorz.height =  cellSize + 'px';
-         $scope.chartHorz.left =  cellSize + 'px';
+         
          
          $scope.chartVert.height = height + 'px';
-         $scope.chartVert.width =  cellSize + 'px';
+        
+         
          
          $timeout(function(){
              $scope.tableOffsetTop = angular.element('#chart').offset().top;
-             $scope.tableOffsetLeft = angular.element('#chart').offset().left;
-             $scope.chartVert.top =  $scope.tableOffsetTop + 'px';
+             /*$scope.tableOffsetLeft = angular.element('#chart').offset().left;*/
+           /*  $scope.chartVert.top =  $scope.tableOffsetTop + 'px';*/
          },0);
          
          //Окно редактирования
@@ -148,50 +143,83 @@ angular.module('knitMoAngularjsApp')
         var verticalHeader = angular.element('#header-vertical');
         var horizontalHeader = angular.element("#header-horizontal");
         var toolBox = angular.element('#tool-box');
-        var startPress, stopPress, firstClicked;
-        
-        chart.on('touchend mouseup',function(event){
-           event.preventDefault();
-           if(startPress && firstClicked) {
-               stopPress = new Date();
-               
-               if((stopPress - startPress) > 100){
-                  
-                  scope.edit(angular.element(firstClicked).attr('data-x'), angular.element(firstClicked).attr('data-y')); 
-               } else {
-               firstClicked.style.background = scope.choosenColor;
-           }
-           }
-           startPress = null;
-           startPress = null;
-           firstClicked = null;
-        });
+        var firstClicked;
         
         chart.on('touchstart mousedown',function(event){
             
+            event.stopPropagation();
+            var e = event.originalEvent;
             
-        angular.element('#tool-box').fadeTo(0,0.5);
-        startPress = new Date();
-        firstClicked = event.originalEvent.target;
-        this.x = event.clientX || event.originalEvent.touches[0].clientX;
-        this.y = event.clientY || event.originalEvent.touches[0].clientY;
-        
+            if(angular.element(event.target).is('#chart td') && (!e.touches || e.touches.length === 1))
+                {
+                    event.preventDefault();
+                    
+                    /*startPress = new Date();*/
+                    firstClicked = angular.element(e.target);
+                    /*this.x = event.clientX || event.originalEvent.touches[0].clientX;
+                    this.y = event.clientY || event.originalEvent.touches[0].clientY;*/
+                }
+           
+            
         });
+        
+        
+        
+        
         chart.on('touchmove mousemove',function(event){
           
-            var x, y, target, width, height, size;
+            var x, y, target, chartBottom, dataY, dataX, chartRight, chartTop, chartLeft;
             
-            if(firstClicked && (!event.originalEvent.touches || event.originalEvent.touches.length === 1)) {
-            event.preventDefault(); 
-            size = firstClicked.getBoundingClientRect();
-            height = Math.abs(size.top - size.bottom);
-            width = Math.abs(size.right - size.left);
-            firstClicked.style.background = scope.choosenColor;
-           
-            x = event.clientX || event.originalEvent.touches[0].clientX;
-            y = event.clientY || event.originalEvent.touches[0].clientY;
-           
-           if(+x >= 0 && +y >= 0 && 
+            event.stopPropagation();
+            var e = event.originalEvent;
+            
+            if(firstClicked && (!e.touches || e.touches.length === 1)) {
+                
+                event.preventDefault(); 
+                if(!firstClicked.is("[data-content=\"" + scope.choosenColor + "\"]"))
+                    {
+                        firstClicked.css("background", scope.choosenColor);
+                        firstClicked.attr("data-content", scope.choosenColor);
+                        eService.updateCell(firstClicked.attr("data-y"),
+                        firstClicked.attr("data-x"), scope.choosenColor);
+                    }
+                
+                
+               
+               
+                x = event.clientX || event.originalEvent.touches[0].clientX;
+                y = event.clientY || event.originalEvent.touches[0].clientY;
+                chartBottom = chart[0].getBoundingClientRect().bottom;
+                chartTop = chart[0].getBoundingClientRect().top;
+                chartRight = chart[0].getBoundingClientRect().right;
+                chartLeft = chart[0].getBoundingClientRect().left;
+                
+                if(chartBottom >= y && y > chartTop && chartRight >= x && x > chartLeft)
+                    {   
+                        
+                        var helperY = Number((chartBottom - y)/chart.height() * eService.currentChart.limit.y) ^ 0;
+                        dataY = eService.currentChart.limit.y -  1 - helperY;
+                        var helperX = ((chartRight - x)/chart.width()* (eService.currentChart.limit.x)) ^ 0;
+                        dataX = eService.currentChart.limit.x - 1 - helperX;
+                        target = angular.element("[data-x=\"" + dataX + "\"]" + "[data-y=\"" + dataY + "\"]");
+                        if(!target.is("[data-content=\"" + scope.choosenColor + "\"]"))
+                            {   
+                                target.css("background", scope.choosenColor);
+                                target.attr("data-content", scope.choosenColor);
+                                eService.updateCell(dataY, dataX, scope.choosenColor);
+                                
+                            }
+                    
+                        
+                    }
+                else {
+                    firstClicked = null;
+                }
+                
+                
+              
+                
+           /*if(+x >= 0 && +y >= 0 && 
            (Math.abs(this.x - x ) > this.width / 2 || Math.abs(this.y - y ) >  this.height / 2))
             {   
                 
@@ -207,11 +235,41 @@ angular.module('knitMoAngularjsApp')
                     this.x = x;
                     this.y = y;
                 }
-            }
+            }*/
+                
             }
             
         });
-      
+        
+        chart.on('touchend mouseup',function(event){
+           event.stopPropagation();
+           var e = event.originalEvent;
+           
+           if(firstClicked && (!e.touches || e.changedTouches.length === 1)) {
+               event.preventDefault();
+               if(!firstClicked.is("[data-content=\"" + scope.choosenColor + "\"]"))
+                    {
+                        firstClicked.css("background", scope.choosenColor);
+                        firstClicked.attr("data-content", scope.choosenColor);
+                        eService.updateCell(firstClicked.attr("data-y"),
+                        firstClicked.attr("data-x"), scope.choosenColor);
+                    }
+               firstClicked = null;
+           }
+          /* if(startPress && firstClicked) {
+               stopPress = new Date();
+               
+               if((stopPress - startPress) > 100){
+                  
+                  scope.edit(angular.element(firstClicked).attr('data-x'), angular.element(firstClicked).attr('data-y')); 
+               } else {
+               firstClicked.style.background = scope.choosenColor;
+           }
+           }
+           startPress = null;
+           startPress = null;
+           firstClicked = null;*/
+        });
        
         $document.bind('scroll touchmove', function() {
             

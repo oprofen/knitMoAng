@@ -12,29 +12,37 @@ table.chart {
     border-spacing:0 0px;
     border-collapse:collapse;
     
+    
 }
 #header-horizontal { 
     position:relative;
-    left:0px;
     z-index: 1000;
     background-color:white;
     opacity:0.5;
+    height:20px;
+   
     
 }
-
+#mainBody {
+    width:95%;
+    float:left;
+    display:inline-block;
+    overflow-x: auto;
+    position:relative;
+}
 #header-vertical {
-    position:absolute;
-    left:0px;
-    z-index: 1000;
+    position:relative;
     background-color:white;
     opacity:0.5;
+    float:left;
+    display:inline-block;
+    width:5%;
+    padding-top:20px;
+}
+#header-vertical table {
+    width:100%;
 }
 
-
-#chart {
-    position: relative;
-    
-}
 #tool-box {
     
     height: 20px;
@@ -50,7 +58,28 @@ table.chart {
     padding-right: 2.5px;
     height: 40px;
 }
+//ios fixing modal
+body {
+  padding-right: 0px !important
+}
 
+.modal-open {
+  overflow-y: auto;
+}
+chart {
+    padding-right:15px;
+    padding-left:15px;
+    width:100%;
+    float:left;
+    display:inline-block;
+    position:relative;
+}
+
+.blocktest {
+    width:10%;
+    float:left;
+    display:inline-block;
+}
 
 
 
